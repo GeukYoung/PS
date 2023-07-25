@@ -1,4 +1,4 @@
-# 13729. 1013 피보나치 (pesano period & 분할정복 & 피보나치 행렬곱)
+# 13729. 1013 피보나치 (pisano period & 분할정복 & 피보나치 행렬곱)
 
 # K를 13에서 3까지 쪼개어 갈 때, 한단계 낮은 K의 피사노 주기에서는 
 # 같은 mod가 10개씩 반복적으로 들어있기 때문에 어느것의 위치가 
@@ -32,7 +32,7 @@ def Fibo_gen(idx, M):
         idx >>= 1
     return mat_ans[1][0]
 
-def Pesano_period(M,P,N):
+def Pisano_period(M,P,N):
     n_modeM = N % M
     a, b, c = 1, 0, 1
     candidate = []
@@ -51,7 +51,7 @@ def Pesano_period(M,P,N):
 def solve(N):
     k = 3
     M,P = Pesano(k)
-    candidate = Pesano_period(M,P,N) # minimum pesano(k=3) candidate
+    candidate = Pisano_period(M,P,N) # minimum pesano(k=3) candidate
     M *= 10 # compare with next mod
     for k in range(3,13):
         temp = []

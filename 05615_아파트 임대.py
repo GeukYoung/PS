@@ -1,4 +1,4 @@
-# 5615. 아파트 임대 (확률소수론)
+# 5615. 아파트 임대 (밀러라빈)
 
 import sys
 
@@ -11,11 +11,11 @@ def isprime(n):
             return False
     else:
         for i in a_base:
-            if fermat(i,n) != 1:
+            if FIT(i,n) != 1:
                 return False
         return True
 
-def fermat(a,n):
+def FIT(a,n): # Fermat's little Theorem
     r,d = 0,n-1
     while d%2 == 0: r += 1; d //= 2
     x = pow(a,d,n)
