@@ -1,5 +1,3 @@
-# 1006. 습격자 초라기 (dp)
-
 import sys
 
 E_max = 10000
@@ -11,6 +9,7 @@ def init_dp():
     return dp
 
 def find_N(dp, E_in, E_out):
+    if E_out[0] + E_in[0] <= W: dp[0][BOTH] = 1
     for i in range(1, N):
         N_in = 1 if E_in[i-1] + E_in[i] <= W else 2
         N_out = 1 if E_out[i-1] + E_out[i] <= W else 2
@@ -30,6 +29,7 @@ def find_N(dp, E_in, E_out):
         # sel min/  dp[BOTH] + N_both /vs.   dp[BOTH] + N_in&out(2 ~ 4) /vs. dp[IN] + 1 + N_out(1 or 2) /vs. dp[OUT] + 1 + N_in(1 or 2)
         # Out: Both[1][1][1] + |0|(1       Both[1][1] + [0  1](2           In[1][1] + [0  1]               OUT[1][1][1] + [1]
         # In :  n-1[1][1][1] + |1|or2)      n-2[1][1] + [0  1] ~4)        n-1[1][1][1] + [1]               n-1[1][1] + [0  1]
+    return dp
 
 T = int(sys.stdin.readline().strip())
 for _ in range(T):
@@ -38,28 +38,28 @@ for _ in range(T):
     E_out = list(map(int,sys.stdin.readline().split()))
     ans = N*2
     
+    # 0. size = 1
     if N == 1:
         print(1 if E_in[0] + E_out[0] <= W else 2)
         continue
     
-    dp = init_dp()
-    if E_out[0] + E_in[0] <= W: dp[0][BOTH] = 1
-    find_N(dp, E_in[:], E_out[:])
+    # 1. No connection check
+    dp = find_N(init_dp(), E_in[:], E_out[:])
     ans = min(ans, dp[-1][BOTH])
     
-    if E_out[0] + E_out[-1] <= W: # Outer circle connection
-        dp = init_dp()
-        find_N(dp, E_in[:], [E_max]+E_out[1:-1]+[E_max])
+    # 2. Outer circle connection check
+    if E_out[0] + E_out[-1] <= W:
+        dp = find_N(init_dp(), E_in[:], [E_max]+E_out[1:-1]+[E_max])
         ans = min(ans, dp[-1][IN])
 
-    if E_in[0] + E_in[-1] <= W: # Inner circle connection
-        dp = init_dp()
-        find_N(dp, [E_max]+E_in[1:-1]+[E_max], E_out[:])
+    # 3. Inner circle connection check
+    if E_in[0] + E_in[-1] <= W:
+        dp = find_N(init_dp(), [E_max]+E_in[1:-1]+[E_max], E_out[:])
         ans = min(ans, dp[-1][OUT])
 
-    if (E_out[0] + E_out[-1] <= W) & (E_in[0] + E_in[-1] <= W): # Both connection
-        dp = init_dp()
-        find_N(dp, [E_max]+E_in[1:-1]+[E_max], [E_max]+E_out[1:-1]+[E_max])
+    # 4. Both connection check
+    if (E_out[0] + E_out[-1] <= W) & (E_in[0] + E_in[-1] <= W):
+        dp = find_N(init_dp(), [E_max]+E_in[1:-1]+[E_max], [E_max]+E_out[1:-1]+[E_max])
         ans = min(ans, dp[-2][BOTH])
     
     print(ans)
